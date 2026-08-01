@@ -1,0 +1,46 @@
+# MBTA Trail Game Design Document
+Version 1.0
+
+## Game Overview
+Genre: Survival Strategy
+Target Audience:
+* Fans of Oregon Trail
+* Bostonians
+* Casual strategy players
+* Retro game fans
+
+Core Fantasy: Survive the unpredictable Boston commute while managing limited resources and making it safely to the final destination.
+
+Design Pillars:
+* Simple to learn
+* Funny inside jokes
+* Every playthrough tells a different story
+* Easy to expand with new content (additional routes, lines)
+
+## Core Gameplay Loop
+The player repeatedly performs these actions:
+Choose character
+    ↓
+Start Journey
+    ↓
+Choose Action
+    ↓
+Gain or lose resources
+    ↓
+Random Event
+    ↓
+Next Station
+    ↓
+Repeat
+    ↓
+Reach Park Street
+
+## Player Stats
+| Stat            | Description |
+| --------------- | ----------- |
+| Money           | Can be spent on food.            |
+| CharlieCard     |             |
+| Hunger          |             |
+| Current Station |             |
+| Time            |             |
+| Difficulty      |             |
