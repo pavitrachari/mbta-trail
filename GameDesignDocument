@@ -1,46 +1,409 @@
 # MBTA Trail Game Design Document
 Version 1.0
 
-## Game Overview
-Genre: Survival Strategy
-Target Audience:
+# 1. Game Overview
+## 1.1 Concept
+MBTA Trail is a turn-based commuter survival and resource-management game inspired by Oregon Trail.
+The player must travel from the end of one Boston subway line to Park Street while managing limited resources, navigating train delays and mechanical failures, finding food, and making strategic decisions about how to spend their limited time and money.
+The game uses a simple retro presentation with minimal graphics. Its primary source of entertainment is the combination of resource management, random events, and humorous writing based on the real Boston commuting experience.
+
+## 1.2 Core Fantasy
+Survive the unpredictable Boston commute while managing limited resources and making it safely to the final destination.
+
+## 1.3 Target Audience
 * Fans of Oregon Trail
 * Bostonians
 * Casual strategy players
 * Retro game fans
 
-Core Fantasy: Survive the unpredictable Boston commute while managing limited resources and making it safely to the final destination.
+## 1.4 What Makes MBTA Trail Different?
+MBTA Trail's primary appeal is its Boston-specific humor and relatability.
+The game should make players recognize situations they have personally experienced while riding the T. Delays, CharlieCards, Dunkin, crowded platforms, broken escalators, service alerts, and confusing announcements should form the foundation of the game's humor.
+The game should feel less like a parody of Boston and more like a humorous exaggeration of the shared experience of commuting in Boston.
 
-Design Pillars:
-* Simple to learn
-* Funny inside jokes
-* Every playthrough tells a different story
-* Easy to expand with new content (additional routes, lines)
+# 2. Design Pillars
+All gameplay, writing, and visual design decisions should support the following principles.
 
-## Core Gameplay Loop
-The player repeatedly performs these actions:
-Choose character
-    ↓
-Start Journey
-    ↓
-Choose Action
-    ↓
-Gain or lose resources
-    ↓
-Random Event
-    ↓
-Next Station
-    ↓
-Repeat
-    ↓
-Reach Park Street
+## 2.1 Authentic Boston
+The game should feel recognizable to someone who actually rides the T.
+Whenever possible, events and commentary will be based on real MBTA experiences, announcements, terminology, stations, and commuter behavior.
 
-## Player Stats
-| Stat            | Description |
-| --------------- | ----------- |
-| Money           | Can be spent on food.            |
-| CharlieCard     |             |
-| Hunger          |             |
-| Current Station |             |
-| Time            |             |
-| Difficulty      |             |
+## 2.2 Humor Through Recognition
+The primary source of humor should be situations that players recognize.
+
+The game should favor dry, understated observations over elaborate jokes.
+Example:
+> "The Red Line experiencing delays up to 30 minutes due to an earlier medical emergency."
+
+The humor comes from the player's familiarity with hearing this type of announcement.
+
+## 2.3 Shared Misery
+The game should laugh at the shared experience of commuting woes.
+
+## 2.4 Simple Mechanics
+The game should be easy to understand and play.
+The player should be able to understand the fundamental mechanics without reading a lengthy tutorial.
+Complex systems should only be added when they create meaningful decisions or improve replayability.
+
+## 2.5 Meaningful Decisions
+Random events should create uncertainty, but the player should still feel that their decisions matter.
+A skilled player should generally perform better than an inexperienced player, even though individual runs can be affected by bad luck.
+
+## 2.6 Replayability
+Each playthrough should create a different commuter story through:
+- Random delays
+- Random mechanical failures
+- Different food opportunities
+- Different resource situations
+- Line-specific events
+- Rare events
+- Player decisions
+
+## 2.7 Small and Polished
+Version 1 should prioritize polish over scope.
+
+# 3. Tone and Writing
+
+## 3.1 Overall Tone
+The tone should be:
+- Absurd Boston humor
+- Dry and deadpan
+- Occasionally ridiculous
+- Primarily grounded in reality
+
+The target balance is approximately:
+**80% realistic / 20% ridiculous**
+
+## 3.2 Humor
+Humor should primarily come from recognizable Boston and MBTA experiences.
+
+Examples include:
+- Service delays
+- Mechanical failures
+- Shuttle buses
+- CharlieCard problems
+- Crowded trains
+- Broken escalators
+- Dunkin
+- Confusing service announcements
+- Tourists
+- Commuter etiquette
+
+## 3.3 Realism vs. Absurdity
+Most events should be plausible occurrences that have been turned into gameplay events.
+A smaller percentage can deliberately exaggerate reality.
+For example:
+**Realistic:**
+> "A disabled train ahead is causing delays."
+
+**Slightly exaggerated:**
+> "The train has been sitting at the station for seven minutes. Nobody knows why."
+
+**Ridiculous:**
+> "The Orange Line train has caught fire."
+
+The ridiculous events should remain recognizable as jokes about the MBTA rather than transforming the game into a fantasy setting.
+
+## 3.4 Source of Humor
+Whenever possible, commentary should be inspired by actual MBTA messaging, announcements, service alerts, station experiences, and common commuter observations.
+The game should favor short, memorable text over long dialogue.
+
+# 4. Core Gameplay
+
+## 4.1 Objective
+The player's objective is to reach Park Street Station from the starting station as quickly as possible.
+The player chooses a difficulty/archetype, which determines their starting subway line and initial resources.
+
+## 4.2 Starting Lines
+| Difficulty | Archetype | Starting Line | Score Multiplier |
+|------------|-----------|---------------|------------------|
+| Easy | Tech/Finance Bro | Red Line | 1× |
+| Medium | College Student | Green Line | 2× |
+| Hard | State Employee | Orange Line | 3× |
+
+## 4.3 Core Gameplay Loop
+The game follows this basic loop:
+1. Begin the journey.
+2. Arrive at a station.
+3. Choose an action.
+4. Advance time.
+5. Update player resources.
+6. Resolve any random event.
+7. Continue toward Park Street.
+8. Reach Park Street or lose the game.
+9. Calculate the final score.
+
+## 4.4 Player Actions
+The initial version of the game will include:
+- Ride Train
+- Buy Food
+- Hunt for Food
+- Rest
+- Wait
+
+Additional actions may be added if they create meaningful strategic choices.
+
+# 5. Player Resources
+
+The player manages a small number of resources throughout the journey.
+
+## 5.1 Time
+
+Time is the primary resource and scoring factor.
+The player's goal is to reach Park Street in the shortest possible elapsed time.
+Time is measured in minutes.
+
+Time may increase due to:
+- Train travel
+- Waiting
+- Buying food
+- Resting
+- Random delays
+- Mechanical failures
+- Other events
+
+## 5.2 Money
+Money is used primarily to purchase food and pay transportation-related costs.
+Starting money varies by archetype.
+Money is measured in actual US dollars.
+Exact starting amounts and prices will be determined during balancing.
+
+## 5.3 CharlieCard
+The player's transportation access is represented by their CharlieCard.
+Easy mode provides an unlimited monthly pass.
+Medium and Hard modes use stored value.
+The player may need to spend money to replenish their balance.
+
+## 5.4 Hunger
+Hunger represents the player's physical condition.
+Hunger decreases as time passes.
+Food restores hunger.
+The player should receive increasingly severe penalties as hunger becomes more severe.
+The exact hunger mechanics and thresholds will be determined during balancing.
+
+## 5.5 Difficulty
+Difficulty determines:
+- Starting subway line
+- Starting resources
+- Special archetype abilities
+- Score multiplier
+- Potentially line-specific event frequency
+
+## 5.6 Score Multiplier
+Difficulty determines the player's score multiplier:
+- Easy: 1×
+- Medium: 2×
+- Hard: 3×
+
+# 6. Commuter Archetypes
+
+Each difficulty level is represented by a different commuter archetype.
+
+The archetype determines the player's starting resources and provides a special gameplay advantage.
+
+## 6.1 Tech / Finance Bro — Easy
+### Starting Line
+Red Line
+
+### Difficulty
+Easy
+
+### Score Multiplier
+1×
+
+### Concept
+The player has money and transportation security, making this the easiest journey.
+
+### Advantages
+- Monthly CharlieCard / unlimited rides
+- High starting cash
+- Greater ability to solve problems by spending money
+
+### Disadvantages
+- Lowest score multiplier
+
+### Character Flavor
+With a coffee cup in one hand and phone in the other, you are ready for work. Any unexpected delays can be solved with money.
+
+---
+
+## 6.2 College Student — Medium
+### Starting Line
+Green Line
+
+### Difficulty
+Medium
+
+### Score Multiplier
+2×
+
+### Concept
+The player has limited money but is resourceful.
+
+### Advantages
+- Better opportunities to find free food
+- Access to occasional student-related food opportunities
+
+### Disadvantages
+- Limited cash
+- Limited CharlieCard balance
+
+### Character Flavor
+You are scrappy and resourceful. You can probably find some free stuff at the dozens of colleges on the way downtown.
+
+---
+
+## 6.3 State Employee — Hard
+
+### Starting Line
+Orange Line
+
+### Difficulty
+Hard
+
+### Score Multiplier
+3×
+
+### Concept
+The player has very little money but is accustomed to making things work.
+
+### Advantages
+- Better at recovering from hunger
+- Hunger decreases more slowly
+- More resilient to resource scarcity
+
+### Disadvantages
+- Very little starting money
+- Limited CharlieCard balance
+- Less ability to solve problems by spending money
+
+### Character Flavor
+Payday is still a few days away. You have survived budget cuts, hiring freezes, and mandatory trainings. You can probably survive the Orange Line.
+
+# 7. Subway Routes
+MBTA Trail uses three predefined routes. Each route begins at a designated
+station and ends at Park Street.
+
+The routes are intentionally fixed for Version 1. This keeps the game
+simple and allows each line to have its own personality, events, and
+difficulty.
+
+## 7.1 Red Line — Easy
+**Archetype:** Tech / Finance Bro  
+**Difficulty:** Easy  
+**Score Multiplier:** 1×  
+**Starting Station:** Alewife  
+**Destination:** Park Street
+
+### Route
+1. Alewife
+2. Davis
+3. Porter
+4. Harvard
+5. Central
+6. Kendall/MIT
+7. Charles/MGH
+8. Park Street
+
+### Route Design
+The Red Line is the shortest route in Version 1 and serves as the
+introduction to the game's mechanics.
+
+The player has relatively abundant resources and an unlimited monthly
+CharlieCard, allowing them to focus primarily on minimizing travel time.
+
+The Red Line should have relatively forgiving random events compared with
+the Green and Orange Lines.
+
+---
+
+## 7.2 Green Line — Medium
+**Archetype:** College Student  
+**Difficulty:** Medium  
+**Score Multiplier:** 2×  
+**Starting Station:** Longwood  
+**Destination:** Park Street
+
+### Route
+1. Longwood
+2. Fenway
+3. Kenmore
+4. Hynes Convention Center
+5. Copley
+6. Arlington
+7. Boylston
+8. Park Street
+
+### Route Design
+The Green Line provides a moderate challenge.
+
+The player has fewer financial resources than the Easy-mode player and
+must make more deliberate decisions about purchasing food and managing
+transportation costs.
+
+The Green Line should have more frequent delays and service interruptions
+than the Red Line.
+
+The Green Line's event pool may include events involving trolley
+operations, traffic, and situations specific to the Green Line.
+
+---
+
+## 7.3 Orange Line — Hard
+**Archetype:** State Employee  
+**Difficulty:** Hard  
+**Score Multiplier:** 3×  
+**Starting Station:** Oak Grove  
+**Destination:** Park Street
+
+### Route
+1. Oak Grove
+2. Malden Center
+3. Wellington
+4. Assembly
+5. Sullivan Square
+6. Community College
+7. North Station
+8. Haymarket
+9. State
+10. Downtown Crossing
+11. Park Street
+
+### Special Rule
+The player does not automatically travel from Downtown Crossing to
+Park Street.
+
+Upon reaching Downtown Crossing, the player must choose how to reach
+Park Street.
+
+### Option 1 — Red Line Transfer
+The player may transfer to the Red Line.
+**Cost:** Transportation fare
+**Benefit:** Reliable and straightforward.
+
+### Option 2 — Final Concourse Challenge (DESIGN TBD)
+The player may travel through the Downtown Crossing concourse toward
+Park Street without paying an additional fare.
+
+Choosing the concourse triggers the game's final Orange Line challenge,
+similar in spirit to the Kansas River crossing in Oregon Trail.
+
+The outcome of this challenge may affect:
+- Time
+- Hunger
+- Money
+- Whether the player successfully reaches Park Street
+
+### Route Design
+The Orange Line is the most difficult route in Version 1.
+
+The player starts with very limited money and transportation resources,
+but the State Employee archetype is more resilient to hunger and resource
+scarcity.
+
+The Orange Line should contain the game's most severe mechanical and
+service-related events.
+
+The route should feel difficult but fair. A skilled player who manages
+resources carefully should be able to complete the journey consistently,
+while poor decisions and bad luck can result in failure.
