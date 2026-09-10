@@ -1,7 +1,7 @@
 # mbta-trail
 A loving homage to Oregon Trail, Boston, and of course, the MBTA.
 
-MBTA is a turn-based commuter game inspired by classic resource management games such as Oregon Trail.  
+MBTA Trail is a turn-based commuter game inspired by classic resource management games such as Oregon Trail.  
 Players choose a commuter archetype and attempt to travel from the end of a subway line to Park Street while managing:
 - Time
 - Money
