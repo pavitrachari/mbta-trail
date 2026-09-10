@@ -1,0 +1,10 @@
+# Godot 4+ editor/import cache (regenerated automatically, never commit)
+godot/.godot/
+godot/*.translation
+
+# Godot import artifacts for non-versioned formats
+*.import
+
+# OS cruft
+.DS_Store
+Thumbs.db

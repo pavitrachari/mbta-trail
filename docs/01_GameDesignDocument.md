@@ -1,5 +1,5 @@
 # MBTA Trail Game Design Document
-Version 1.0
+Version 1.1
 
 # 1. Game Overview
 ## 1.1 Concept
@@ -289,10 +289,10 @@ simple and allows each line to have its own personality, events, and
 difficulty.
 
 ## 7.1 Red Line — Easy
-**Archetype:** Tech / Finance Bro  
-**Difficulty:** Easy  
-**Score Multiplier:** 1×  
-**Starting Station:** Alewife  
+**Archetype:** Tech / Finance Bro
+**Difficulty:** Easy
+**Score Multiplier:** 1×
+**Starting Station:** Alewife
 **Destination:** Park Street
 
 ### Route
@@ -318,10 +318,10 @@ the Green and Orange Lines.
 ---
 
 ## 7.2 Green Line — Medium
-**Archetype:** College Student  
-**Difficulty:** Medium  
-**Score Multiplier:** 2×  
-**Starting Station:** Longwood  
+**Archetype:** College Student
+**Difficulty:** Medium
+**Score Multiplier:** 2×
+**Starting Station:** Longwood
 **Destination:** Park Street
 
 ### Route
@@ -350,10 +350,10 @@ operations, traffic, and situations specific to the Green Line.
 ---
 
 ## 7.3 Orange Line — Hard
-**Archetype:** State Employee  
-**Difficulty:** Hard  
-**Score Multiplier:** 3×  
-**Starting Station:** Oak Grove  
+**Archetype:** State Employee
+**Difficulty:** Hard
+**Score Multiplier:** 3×
+**Starting Station:** Oak Grove
 **Destination:** Park Street
 
 ### Route
@@ -394,6 +394,9 @@ The outcome of this challenge may affect:
 - Money
 - Whether the player successfully reaches Park Street
 
+The exact mechanics of this challenge must be designed and approved before
+implementation (see docs/04_Backlog.md).
+
 ### Route Design
 The Orange Line is the most difficult route in Version 1.
 
@@ -407,3 +410,253 @@ service-related events.
 The route should feel difficult but fair. A skilled player who manages
 resources carefully should be able to complete the journey consistently,
 while poor decisions and bad luck can result in failure.
+
+# 8. Player State
+
+The player's run is tracked as a small, flat set of values:
+
+* Current Station
+* Time Elapsed
+* Money
+* CharlieCard Balance
+* Hunger
+* Difficulty
+* Score Multiplier
+
+Additional state may be added only when justified by gameplay.
+
+# 9. Turn System
+
+MBTA Trail is turn-based. Each turn represents a period of time.
+The player chooses ONE action per turn.
+
+Initial actions:
+* Ride Train
+* Buy Food
+* Hunt for Food
+* Rest
+* Wait
+
+After an action:
+1. Time advances.
+2. Resources change.
+3. Movement occurs if appropriate.
+4. A random event may occur.
+5. The game displays the result.
+6. The player chooses the next action.
+
+The exact duration of each action is data-driven and easy to rebalance.
+
+# 10. Resources
+
+## 10.1 Time
+Time is measured in minutes. The primary objective is to minimize elapsed
+time. Time can increase because of train travel, waiting, food purchases,
+resting, delays, mechanical failures, and random events.
+
+## 10.2 Money
+Money is represented as actual US dollars and can be spent on food,
+transportation, and other future mechanics. Starting money varies by
+archetype.
+
+## 10.3 CharlieCard
+Easy mode uses an unlimited monthly pass. Medium and Hard modes use
+limited transportation value. The CharlieCard system should be designed
+so that it is easy to rebalance.
+
+## 10.4 Hunger
+Hunger represents the player's physical condition. Hunger decreases over
+time; food restores it. The game should communicate hunger clearly
+without a complicated RPG-style system. Exact thresholds and penalties
+will be determined during balancing.
+
+# 11. Food
+
+Food is a resource-management mechanic. Initial food types may include:
+* Pretzel
+* Pizza
+* Dunkin coffee
+* Granola bar
+* Chips
+
+Each food item has:
+* Name
+* Price
+* Hunger restoration
+* Availability
+* Optional flavor text
+
+Food is loaded from data files rather than hardcoded.
+
+# 12. Hunting
+
+"Hunting" is a humorous adaptation of the Oregon Trail mechanic. The
+player does not hunt animals — instead, the player searches for
+opportunities to obtain food. Possible opportunities include:
+* Free samples
+* Dunkin promotions
+* Food trucks
+* Community events
+* Unexpected free food
+* Other station-specific opportunities
+
+Version 1 uses randomized outcomes. More complex mini-games can be added
+later.
+
+# 13. Random Events
+
+Random events are one of the core gameplay systems. Examples include:
+* Signal problem
+* Mechanical failure
+* Train removed from service
+* Medical emergency
+* Police investigation
+* Lost CharlieCard
+* Found money
+* Found food
+* Free coffee sample
+* Street performer
+* Unexpected express train
+* Train delays
+* Broken escalator
+* Crowded platform
+
+Orange Line events may occasionally become deliberately ridiculous (e.g.
+"The train bursts into flames"), but events should generally be grounded
+in realistic MBTA experiences.
+
+Each event contains:
+* Event ID
+* Title
+* Description
+* Probability
+* Requirements
+* Resource changes
+* Time changes
+* Difficulty
+* Applicable lines
+* Applicable stations
+* Whether the event can repeat
+
+Events are loaded from JSON.
+
+# 14. Stations
+
+Every station has its own identity, including:
+* Station name
+* Line
+* Flavor text
+* Food opportunities
+* Hunting opportunities
+* Possible station-specific events
+* Transfers
+* Special gameplay mechanics, if any
+
+Station flavor text should have multiple variants (target: 3–5 per
+station) so repeated playthroughs don't always show the same text.
+Station content is data-driven, and the real station names and routes
+from Section 7 must be preserved.
+
+# 15. Win Condition
+
+The player wins by reaching Park Street Station. The primary objective is
+to minimize elapsed time. The final score may consider:
+* Elapsed time
+* Money remaining
+* CharlieCard balance
+* Difficulty multiplier
+* Achievements
+* Random bonus achievements
+
+The exact scoring formula will be finalized before it's implemented (see
+docs/04_Backlog.md).
+
+# 16. Lose Conditions
+
+Potential lose conditions include:
+* Running out of money when money is required
+* Being unable to ride because transportation funds are depleted
+* Starving
+* Missing the last train
+* Other carefully designed failure states
+
+Loss should feel like the result of poor resource management combined
+with bad luck — not arbitrary punishment.
+
+# 17. Presentation
+
+The visual style is retro DOS-era: minimal pixel art, text-heavy, static
+backgrounds, simple UI, text boxes, minimal animation. Graphics support
+the gameplay rather than becoming the focus.
+
+Sound is initially simple: UI sounds, train sounds, station sounds, and
+simple retro music. No elaborate animation systems unless requested.
+
+# 18. Technical Requirements
+
+* **Engine:** Godot 4
+* **Language:** GDScript
+* **Architecture:** Object-oriented and modular
+
+Priorities, in order: maintainability, readability, data-driven design,
+easy expansion, simplicity. Gameplay logic must be separated from UI
+wherever practical.
+
+# 19. Data-Driven Design
+
+Use external data files wherever practical. At minimum, the following
+are eventually data-driven: stations, routes, food, events, archetypes,
+and balancing values. Use JSON (or another Godot-compatible format).
+Adding a new event should involve adding an entry to a data file, not
+modifying the event engine.
+
+# 20. Project Structure
+
+```text
+mbta-trail/
+│
+├── README.md
+├── LICENSE
+├── .gitignore
+│
+├── docs/
+│   ├── 01_GameDesignDocument.md
+│   ├── 02_DeveloperNotebook.md
+│   ├── 03_DesignDecisions.md
+│   ├── 04_Backlog.md
+│   └── AI_DevelopmentPrompt.md
+│
+├── data/
+│   ├── stations/
+│   ├── routes/
+│   ├── events/
+│   ├── food/
+│   └── archetypes/
+│
+├── assets/
+│   ├── art/
+│   ├── audio/
+│   └── fonts/
+│
+└── godot/
+    ├── project.godot
+    ├── scenes/
+    ├── scripts/
+    └── ...
+```
+
+# 21. Development Philosophy
+
+Build incrementally, in phases. Do not generate a massive codebase at
+once.
+
+* **Phase 1 — Project Setup:** Godot project, folder structure, initial
+  scenes, architecture, basic game state.
+* **Phase 2 — Core Gameplay:** Player data, stations, routes, movement,
+  turn system.
+* **Phase 3 — Gameplay Systems:** Hunger, money, CharlieCard, food,
+  random events, hunting.
+* **Phase 4 — Interface:** Main menu, character selection, HUD, station
+  screen, event screen, food screen, victory, game over, save/load.
+* **Phase 5 — Content and Polish:** Station flavor text, more events,
+  balance, achievements, audio, pixel art, final polish.
