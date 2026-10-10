@@ -1,0 +1,10 @@
+[
+	{ "id": "alewife", "name": "Alewife" },
+	{ "id": "davis", "name": "Davis" },
+	{ "id": "porter", "name": "Porter" },
+	{ "id": "harvard", "name": "Harvard" },
+	{ "id": "central", "name": "Central" },
+	{ "id": "kendall_mit", "name": "Kendall/MIT" },
+	{ "id": "charles_mgh", "name": "Charles/MGH" },
+	{ "id": "park_street", "name": "Park Street" }
+]
