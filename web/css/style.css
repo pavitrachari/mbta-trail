@@ -21,3 +21,20 @@ h1 {
 p {
 	margin: 0.4rem 0;
 }
+
+button {
+	background: #000;
+	color: #33ff33;
+	border: 2px solid #33ff33;
+	font-family: inherit;
+	font-size: 1rem;
+	padding: 0.5rem 1rem;
+	margin-top: 0.75rem;
+	cursor: pointer;
+}
+
+button:disabled {
+	color: #1a7a1a;
+	border-color: #1a7a1a;
+	cursor: default;
+}
