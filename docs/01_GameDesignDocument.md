@@ -594,21 +594,25 @@ simple retro music. No elaborate animation systems unless requested.
 
 # 18. Technical Requirements
 
-* **Engine:** Godot 4
-* **Language:** GDScript
+* **Platform:** Static web page — plain HTML, CSS, and vanilla
+  JavaScript (ES modules). No build step, bundler, or framework.
 * **Architecture:** Object-oriented and modular
 
 Priorities, in order: maintainability, readability, data-driven design,
 easy expansion, simplicity. Gameplay logic must be separated from UI
-wherever practical.
+wherever practical. Chosen over a game engine (the project started as a
+Godot 4 prototype) because the game is entirely text- and UI-driven, and
+a browser page is simpler to test (just open it) and share (a URL) than
+an engine export — matching the "keep this as simple as Oregon Trail"
+goal more directly. See docs/03_DesignDecisions.md for the full rationale.
 
 # 19. Data-Driven Design
 
 Use external data files wherever practical. At minimum, the following
 are eventually data-driven: stations, routes, food, events, archetypes,
-and balancing values. Use JSON (or another Godot-compatible format).
-Adding a new event should involve adding an entry to a data file, not
-modifying the event engine.
+and balancing values. Use JSON, loaded via `fetch()`. Adding a new event
+should involve adding an entry to a data file, not modifying the event
+engine.
 
 # 20. Project Structure
 
@@ -638,11 +642,10 @@ mbta-trail/
 │   ├── audio/
 │   └── fonts/
 │
-└── godot/
-    ├── project.godot
-    ├── scenes/
-    ├── scripts/
-    └── ...
+└── web/
+    ├── index.html
+    ├── css/
+    └── js/
 ```
 
 # 21. Development Philosophy
@@ -650,8 +653,8 @@ mbta-trail/
 Build incrementally, in phases. Do not generate a massive codebase at
 once.
 
-* **Phase 1 — Project Setup:** Godot project, folder structure, initial
-  scenes, architecture, basic game state.
+* **Phase 1 — Project Setup:** Web project, folder structure, initial
+  page, architecture, basic game state.
 * **Phase 2 — Core Gameplay:** Player data, stations, routes, movement,
   turn system.
 * **Phase 3 — Gameplay Systems:** Hunger, money, CharlieCard, food,

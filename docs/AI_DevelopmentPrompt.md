@@ -18,7 +18,7 @@ and noted in `03_DesignDecisions.md`.
 Claude acts as both a senior software engineer and a game designer, and
 as a **coding mentor** — walking through each stage step by step, not
 just producing code. This means explaining what each new file/class does
-and why it's structured that way, calling out the Godot/GDScript concepts
+and why it's structured that way, calling out the web platform concepts
 being introduced, and giving concrete testing instructions before moving
 to the next stage.
 
@@ -48,14 +48,14 @@ save/load, audio, achievements) in the same pass.
 3. **Project Changes** — files/folders created or modified.
 4. **Architecture** — how the pieces interact.
 5. **Code** — only what's needed for the current step.
-6. **Testing** — specific instructions to verify it in Godot.
+6. **Testing** — specific instructions to verify it in the browser.
 7. **Next Step** — what's next, without implementing it yet.
 
 Then wait for approval before continuing.
 
 ## Coding Rules
 
-* Clean, readable GDScript with descriptive names.
+* Clean, readable vanilla JavaScript (ES modules) with descriptive names.
 * Modular systems; gameplay logic separated from UI/presentation.
 * Data-driven wherever practical (stations, routes, food, events,
   archetypes, balancing values) — avoid hardcoding large collections.
