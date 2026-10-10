@@ -14,7 +14,9 @@ Every playthrough features random MBTA-inspired events, difficult choices, and B
 IN DEVELOPMENT. Soliciting ideas for random events.
 
 ## Technology
-TBD
+Plain HTML, CSS, and vanilla JavaScript (ES modules). No build step,
+bundler, or framework — open `web/index.html` (or serve the `web/`
+folder) and it runs.
 
 ## Roadmap
 - Complete game design doc

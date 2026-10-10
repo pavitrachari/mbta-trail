@@ -5,25 +5,30 @@ gameplay but are worth recording so we don't relitigate them later.
 
 ## Phase 1 — Project Setup
 
-**Engine version:** Godot 4.3 (stable). No specific 4.x feature is
-required beyond what any recent 4.x release supports; pin to 4.3 for
-consistency across sessions.
+**Platform (superseding an earlier choice):** Phase 1 was first built as
+a Godot 4 project. We reconsidered and switched to a plain static web
+page (HTML/CSS/vanilla JS, no build step) because the game is entirely
+text/UI-driven with no need for an engine's rendering, physics, or scene
+editor — and a browser page is simpler to test (open a file, no editor
+install) and to share (a URL, not an export build), which fits the
+"keep it as simple as Oregon Trail" goal better. The architecture
+decisions below (single state owner, data-driven JSON) are unchanged;
+only the implementation language/platform changed.
 
-**Renderer:** GL Compatibility (`gl_compatibility`). Matches the retro,
-low-fidelity presentation goal and runs on the widest range of hardware,
-including older/lower-power machines — appropriate for a text-and-pixel-art
-game with no need for advanced 3D rendering features.
-
-**State architecture:** A single autoloaded singleton, `GameState`, owns
-one `PlayerState` object for the current run. UI scenes read from
-`GameState.player` and call methods on `GameState`/`PlayerState` to
-change it; they never mutate resources by reaching into other UI nodes.
-This keeps gameplay logic out of the UI layer per the GDD's technical
+**State architecture:** A single module-level object, `GameState`
+(`web/js/state/game-state.js`), owns one `PlayerState` object for the
+current run. Because ES modules are singletons by default (evaluated
+once, cached, same object returned to every importer), this needs no
+special registration — unlike Godot, which required an explicit
+`[autoload]` entry for the same effect. UI code reads from
+`GameState.player` and will call methods on `GameState`/`PlayerState` to
+change it, never mutating it by reaching into unrelated UI code. This
+keeps gameplay logic out of the UI layer per the GDD's technical
 priorities (Section 18).
 
-**Data format:** JSON files, parsed by a small loader utility, per GDD
-Section 19. Not introduced until Phase 2, since Phase 1 has no station/
-route/event content yet.
+**Data format:** JSON files, loaded with `fetch()`, per GDD Section 19.
+Not introduced until Phase 2, since Phase 1 has no station/route/event
+content yet.
 
 **Docs restructuring:** Split the original single `GameDesignDocument`
 file into `01_GameDesignDocument.md` (pure design, sections renumbered
