@@ -62,29 +62,44 @@ button:disabled {
 	margin: 0.3rem 0;
 }
 
+.hunt-instructions {
+	font-size: 0.85rem;
+	color: #1a7a1a;
+	margin: 0.4rem 0 0;
+}
+
 #hunt-status {
 	font-size: 0.85rem;
 	color: #1a7a1a;
-	margin: 0.4rem 0 0.3rem;
+	margin: 0.2rem 0 0.3rem;
 }
 
-#platform-track {
+#hunt-arena {
 	position: relative;
-	height: 60px;
-	background: #1a1a1a;
-	border-bottom: 5px dashed #ffcc00;
+	width: 100%;
+	height: 220px;
+	background-color: #000;
+	background-image: radial-gradient(#444 1px, transparent 1px);
+	background-size: 24px 24px;
+	border: 1px solid #1a7a1a;
 	overflow: hidden;
 }
 
-.food-token {
+.hunt-ship,
+.hunt-food-target {
 	position: absolute;
-	top: 50%;
-	left: -15%;
-	transform: translateY(-50%);
-	white-space: nowrap;
-	font-size: 1.2rem;
-	color: #33ff33;
-	cursor: pointer;
-	transition-property: left;
-	transition-timing-function: linear;
+	top: 0;
+	left: 0;
+	font-size: 1.4rem;
+	line-height: 1;
+}
+
+.hunt-bullet {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 4px;
+	height: 10px;
+	background: #33ff33;
+	border-radius: 2px;
 }

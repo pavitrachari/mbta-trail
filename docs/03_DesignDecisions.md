@@ -97,31 +97,42 @@ would visibly change), and there's no difficulty/archetype selection
 screen yet - that's Phase 4 Interface work. Revisit CharlieCard cost
 once archetype selection exists, so it's actually observable.
 
-**Hunt for Food (superseded by a minigame):** Initially built as a
-weighted dice roll (`data/food/hunt_outcomes.json` +
-`web/js/util/weighted-random.js`). Replaced per explicit request with a
-skill-based minigame instead: food items cross a simple platform scene
-and the player clicks them before they slide past. This fits the GDD's
-"Meaningful Decisions" pillar (Section 2.5) better than pure RNG, and
-the GDD explicitly allowed upgrading hunting to "more complex
-mini-games" later (Section 12). The old files were deleted rather than
-left dead - `data/food/huntable_foods.json` (10 iconic Boston items:
-pretzel, pizza, Dunkin coffee, clam chowder, baked beans, Boston cream
-pie, fluffernutter, lobster roll, Fenway Frank, cannoli) replaces
-`hunt_outcomes.json`.
+**Hunt for Food has gone through two redesigns.** v1 was a weighted
+dice roll (`hunt_outcomes.json` + `weighted-random.js` - both now
+deleted). v2 was a click-to-catch minigame (food items slid across a
+platform track; click before they exit). v3, current: a Spacewar!
+-inspired shooter (see below), per explicit request. Each redesign's
+old files were deleted rather than left dead. The underlying reason to
+move past pure RNG stands across all of this: GDD Section 2.5
+("Meaningful Decisions") wants skill to matter, and Section 12
+explicitly allowed upgrading hunting to a real minigame later.
 
-**Minigame scope and mechanics:** Click-to-catch was chosen over a
-moving-cart or whack-a-mole style (the two other options discussed) as
-the simplest to build with plain CSS transitions - no keyboard input or
-collision math needed. Each hunt samples 6 unique foods (`HUNT_ROUNDS`)
-via a Fisher-Yates shuffle, shown one at a time; each crosses the
-platform over a randomized 1.0-2.0s duration so timing itself is the
-skill, rather than the identity of the food implying a fixed
-difficulty. `GameState` stays animation-agnostic: it only exposes
-`pickHuntRoundFoods()` and `applyHuntResults(caughtFoods)`; all
-CSS/DOM/animation code lives in `main.js`. Hunting still always costs
-`HUNT_MINUTES = 5` regardless of how many foods were caught - skill
-decides the haul, not the time spent.
+**v3 - Spacewar! shooter:** Spacewar! was built at MIT in 1962, which
+is the actual Boston-relevant hook for this pick, not just "space games
+are fun." `web/js/hunt-minigame.js` is a self-contained module (ship
+movement, bullets, collision, the whole animation loop) that takes a
+food list + bullet count and resolves with whichever foods got shot -
+it has no idea what GameState, hunger, or money even are. `GameState`
+correspondingly only exposes `pickHuntRoundFoods()` (now just the full
+shortened list - see below) and `applyHuntResults(caughtFoods)`,
+unchanged in shape from v2. Hunting still always costs
+`HUNT_MINUTES = 5` regardless of outcome - skill decides the haul, not
+the time spent.
+
+**Simplified "flying around" on purpose:** True Spacewar! has
+rotation, thrust, momentum, and a central gravity well. That's a lot of
+physics for a session meant to "go by pretty quickly." Went with
+4-directional movement instead - arrow keys move the ship and set its
+firing direction simultaneously (last-pressed direction = facing), no
+momentum. Still feels like flying and aiming, without physics tuning
+eating the time budget.
+
+**Food list shortened to 5** (pretzel, pizza, Dunkin coffee, lobster
+roll, cannoli) per explicit request, paired with 6 bullets - just
+enough slack for one miss on a clean sweep. The dropped items (clam
+chowder, baked beans, Boston cream pie, fluffernutter, Fenway Frank)
+aren't gone, just not in `data/food/huntable_foods.json` right now;
+trivial to add back since it's one JSON file.
 
 **Not emoji-perfect, and that's fine:** Cannoli uses the 🍪 (cookie)
 emoji since there's no dedicated cannoli emoji - an acceptable

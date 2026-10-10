@@ -8,18 +8,6 @@ import { loadRoute, loadStations, loadFoodItems, loadHuntableFoods } from "../da
 const HUNGER_DECAY_PER_MINUTE = 1;
 const BUY_FOOD_MINUTES = 3;
 const HUNT_MINUTES = 5;
-const HUNT_ROUNDS = 6;
-
-// Fisher-Yates shuffle, used to pick a random sample of foods for one
-// hunt without repeats.
-function shuffledSample(items, count) {
-	const pool = [...items];
-	for (let i = pool.length - 1; i > 0; i--) {
-		const j = Math.floor(Math.random() * (i + 1));
-		[pool[i], pool[j]] = [pool[j], pool[i]];
-	}
-	return pool.slice(0, count);
-}
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -110,12 +98,12 @@ class GameStateManager {
 		return food;
 	}
 
-	// Picks the random, non-repeating set of foods that will appear in
-	// one "Hunt for Food" minigame session. Pure selection - no state
-	// change and no time cost yet; that happens in applyHuntResults()
-	// once the player has actually played the round.
+	// The foods available to spawn in one "Hunt for Food" minigame
+	// session - currently just all of them, since the list itself is
+	// short. Returns a copy so the minigame can freely mutate its own
+	// working list without touching GameState's.
 	pickHuntRoundFoods() {
-		return shuffledSample(this.huntableFoods, HUNT_ROUNDS);
+		return [...this.huntableFoods];
 	}
 
 	// Called once a hunt session is over. Always costs HUNT_MINUTES,
