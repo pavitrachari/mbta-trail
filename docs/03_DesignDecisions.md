@@ -35,3 +35,30 @@ file into `01_GameDesignDocument.md` (pure design, sections renumbered
 1–21) and `AI_DevelopmentPrompt.md` (process/collaboration rules). This
 matches the project structure in GDD Section 20 and keeps design and
 process concerns from bleeding into each other.
+
+## Phase 2 — Core Gameplay (movement)
+
+**Scope cut:** Implemented only the "Ride Train" action and real
+station/route data this phase, not the full 5-action turn menu (GDD
+Section 9). Buy Food / Hunt / Rest / Wait don't do anything meaningful
+until Phase 3 gives them money/hunger effects, so a menu with four dead
+buttons wouldn't have taught us anything. The turn menu itself arrives
+alongside those actions.
+
+**Route/station JSON schema:** `data/routes/<line>.json` holds `id`,
+`name`, an ordered `stationIds` array, and a single `rideMinutes` value
+applied to every hop on that route. `data/stations/<line>.json` is an
+array of `{ id, name }`. One ride-time constant per route (not per leg)
+is the simplest possible knob; it can be split into per-leg costs later
+if a specific stretch (e.g. the Downtown Crossing finale) needs its own
+number. Station flavor text, food/hunting opportunities, and
+station-specific events (GDD Section 14) are deliberately not in this
+schema yet — they're a Phase 5 content pass, and adding empty
+placeholder fields now would be speculative.
+
+**Serving directory:** `data/` lives outside `web/` (see GDD Section
+20's project structure), and `fetch()` paths in `game-state.js` are
+`../data/...`, relative to the page. That means the local dev server
+must be started from the **repository root**, not from inside `web/` -
+otherwise the server can't see anything above its own root and the
+fetch 404s. See README.md for the exact command.

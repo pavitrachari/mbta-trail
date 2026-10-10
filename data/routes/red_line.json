@@ -1,0 +1,15 @@
+{
+	"id": "red_line",
+	"name": "Red Line",
+	"stationIds": [
+		"alewife",
+		"davis",
+		"porter",
+		"harvard",
+		"central",
+		"kendall_mit",
+		"charles_mgh",
+		"park_street"
+	],
+	"rideMinutes": 4
+}

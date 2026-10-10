@@ -15,8 +15,18 @@ IN DEVELOPMENT. Soliciting ideas for random events.
 
 ## Technology
 Plain HTML, CSS, and vanilla JavaScript (ES modules). No build step,
-bundler, or framework — open `web/index.html` (or serve the `web/`
-folder) and it runs.
+bundler, or framework.
+
+## Running Locally
+The game loads station/route data with `fetch()`, which browsers block
+against `file://` paths — so serve the project instead of opening
+`index.html` directly. Run this from the **repository root** (not from
+inside `web/` — the game's code lives in `web/`, but it loads data from
+a sibling `data/` folder, so the server needs to see both):
+```
+python3 -m http.server 8000
+```
+Then open `http://localhost:8000/web/` in a browser.
 
 ## Roadmap
 - Complete game design doc
