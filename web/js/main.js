@@ -1,9 +1,38 @@
 import { GameState } from "./state/game-state.js";
 
-// Phase 2 screen: shows the player's current station and lets them
-// ride the train forward one stop at a time until Park Street. No
-// money/hunger effects yet, and no other actions - those arrive once
-// Phase 3 gives them something real to do.
+// Phase 3 screen: adds hunger decay and a food menu on top of Phase
+// 2's movement. Hunt/Rest/Wait and the full turn menu still don't
+// exist yet - those are later Phase 3 slices.
+
+function buildFoodMenu() {
+	const menu = document.getElementById("food-menu");
+	for (const food of GameState.foodItems) {
+		const row = document.createElement("div");
+		row.className = "food-item";
+
+		const label = document.createElement("span");
+		label.textContent = `${food.name} — $${food.price.toFixed(2)} (+${food.hungerRestored} hunger)`;
+
+		const flavor = document.createElement("p");
+		flavor.className = "flavor-text";
+		flavor.textContent = food.flavorText;
+
+		const buyButton = document.createElement("button");
+		buyButton.textContent = "Buy";
+		buyButton.dataset.foodId = food.id;
+		buyButton.dataset.price = food.price;
+		buyButton.addEventListener("click", () => {
+			const bought = GameState.buyFood(food.id);
+			document.getElementById("food-message").textContent = bought
+				? `Bought a ${bought.name}.`
+				: "Can't afford that.";
+			refreshDisplay();
+		});
+
+		row.append(label, flavor, buyButton);
+		menu.append(row);
+	}
+}
 
 function refreshDisplay() {
 	const player = GameState.player;
@@ -32,10 +61,16 @@ function refreshDisplay() {
 		rideButton.disabled = false;
 		resultLabel.textContent = "";
 	}
+
+	for (const buyButton of document.querySelectorAll("#food-menu button")) {
+		buyButton.disabled = GameState.hasArrived || player.money < Number(buyButton.dataset.price);
+	}
 }
 
 async function main() {
 	await GameState.loadRedLine();
+	await GameState.loadFoodMenu();
+	buildFoodMenu();
 	refreshDisplay();
 
 	document.getElementById("ride-button").addEventListener("click", () => {

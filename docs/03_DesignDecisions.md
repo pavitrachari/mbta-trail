@@ -62,3 +62,30 @@ placeholder fields now would be speculative.
 must be started from the **repository root**, not from inside `web/` -
 otherwise the server can't see anything above its own root and the
 fetch 404s. See README.md for the exact command.
+
+## Phase 3 — Gameplay Systems (hunger + food)
+
+**Scope cut:** This slice is hunger decay and "Buy Food" only - not
+CharlieCard cost on Ride Train, not Hunt/Rest/Wait, not random events.
+Hunger decay and food restoration are bundled together deliberately:
+neither is a meaningful decision without the other (GDD Section 5.4 /
+10.4).
+
+**Centralized time advancement:** Added `GameState.advanceTime(minutes)`
+as the single place that bumps `timeElapsedMinutes` and decays hunger.
+`rideTrain()` and `buyFood()` both go through it rather than duplicating
+the decay math, so Rest/Wait/Hunt get correct hunger decay for free when
+they're added later.
+
+**Placeholder balancing constants:** `HUNGER_DECAY_PER_MINUTE = 1` and
+`BUY_FOOD_MINUTES = 3`, hardcoded in `game-state.js` rather than put in a
+data file. GDD Section 19 wants balancing values data-driven eventually,
+but there's only one of each constant right now and no actual need to
+rebalance them independently yet - introducing a config-loading system
+for two numbers would be premature. Revisit when the real balancing
+pass happens (see `04_Backlog.md`).
+
+**Food data:** `data/food/food.json` holds the GDD's starter items
+(Section 11) as a single shared list - not per-line or per-station yet.
+Station-specific food opportunities (GDD Section 14) are a Phase 5
+content concern, not Phase 3 plumbing.

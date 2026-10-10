@@ -9,16 +9,21 @@ and approved at the right phase instead of sneaking in early.
   §7.3). Inspired by the Kansas River crossing in Oregon Trail. Mechanics
   not yet designed — must be discussed and approved before Phase 3/5
   Orange Line work.
-- **Hunger thresholds and penalties** (GDD §10.4). Exact numeric
-  breakpoints and their effects — to be tuned during balancing (Phase 3).
+- **Hunger thresholds and penalties** (GDD §10.4). Low-hunger effects
+  (beyond "it can't go below 0") aren't designed yet — no starvation
+  consequence, no low-hunger warning. The decay rate itself is a rough
+  placeholder (`HUNGER_DECAY_PER_MINUTE = 1` in `game-state.js`) pending
+  a real balancing pass.
 - **Scoring formula** (GDD §15). How elapsed time, money, CharlieCard
   balance, difficulty multiplier, and achievements combine into a final
   score.
 - **CharlieCard balancing values** (GDD §10.3): starting balances per
-  archetype, fare costs per line, top-up amounts.
+  archetype, fare costs per line, top-up amounts. Ride Train doesn't
+  spend CharlieCard balance yet at all.
 - **Event JSON schema** (GDD §13): exact field names/types for event
   data files, finalized when Phase 3 (random events) begins.
-- **Food data and prices** (GDD §11): finalized when Phase 3 begins.
+- **Food prices/hunger values** (GDD §11): placeholder numbers are in
+  `data/food/food.json` now (Phase 3), but not balance-tested.
 
 ## Future features (not Version 1)
 

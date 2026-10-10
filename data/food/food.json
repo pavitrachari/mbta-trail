@@ -1,0 +1,37 @@
+[
+	{
+		"id": "pretzel",
+		"name": "Pretzel",
+		"price": 2.5,
+		"hungerRestored": 15,
+		"flavorText": "A questionable station pretzel. Edible, probably."
+	},
+	{
+		"id": "pizza",
+		"name": "Pizza Slice",
+		"price": 4.0,
+		"hungerRestored": 30,
+		"flavorText": "Not the best slice in Boston. It's here, though, and so are you."
+	},
+	{
+		"id": "dunkin_coffee",
+		"name": "Dunkin Coffee",
+		"price": 3.25,
+		"hungerRestored": 10,
+		"flavorText": "Regular, light and sweet. The fuel of the Commonwealth."
+	},
+	{
+		"id": "granola_bar",
+		"name": "Granola Bar",
+		"price": 2.0,
+		"hungerRestored": 12,
+		"flavorText": "Found at the bottom of your bag. Still sealed. Good enough."
+	},
+	{
+		"id": "chips",
+		"name": "Chips",
+		"price": 2.75,
+		"hungerRestored": 14,
+		"flavorText": "A small bag that is mostly air."
+	}
+]

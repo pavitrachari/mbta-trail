@@ -1,5 +1,12 @@
 import { PlayerState, Difficulty } from "./player-state.js";
-import { loadRoute, loadStations } from "../data/data-loader.js";
+import { loadRoute, loadStations, loadFoodItems } from "../data/data-loader.js";
+
+// Placeholder balancing constants. Not yet data-driven (GDD Section 19
+// eventually wants these externalized too) because there's only one
+// of each so far - worth revisiting once real balancing starts and
+// there's an actual reason to rebalance them independently.
+const HUNGER_DECAY_PER_MINUTE = 1;
+const BUY_FOOD_MINUTES = 3;
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -22,6 +29,7 @@ class GameStateManager {
 
 		this.route = null;
 		this.stationsById = null;
+		this.foodItems = null;
 	}
 
 	// Loads the Red Line's route and station data and places the player
@@ -34,6 +42,12 @@ class GameStateManager {
 		this.player.currentStation = this.route.firstStationId;
 	}
 
+	// Loads the available food items. Must be awaited before calling
+	// buyFood() or listing foodItems in the UI.
+	async loadFoodMenu() {
+		this.foodItems = await loadFoodItems("../data/food/food.json");
+	}
+
 	// The Station object the player is currently standing at.
 	get currentStation() {
 		return this.stationsById.get(this.player.currentStation);
@@ -41,6 +55,14 @@ class GameStateManager {
 
 	get hasArrived() {
 		return this.player.currentStation === this.route.lastStationId;
+	}
+
+	// Spends time and, as a side effect, drains hunger. Every action
+	// that takes time should go through this rather than touching
+	// timeElapsedMinutes directly, so hunger decay stays in one place.
+	advanceTime(minutes) {
+		this.player.timeElapsedMinutes += minutes;
+		this.player.hunger = Math.max(0, this.player.hunger - minutes * HUNGER_DECAY_PER_MINUTE);
 	}
 
 	// Advances the player one stop along the route and spends the
@@ -51,7 +73,21 @@ class GameStateManager {
 		}
 		const nextStationId = this.route.nextStationId(this.player.currentStation);
 		this.player.currentStation = nextStationId;
-		this.player.timeElapsedMinutes += this.route.rideMinutes;
+		this.advanceTime(this.route.rideMinutes);
+	}
+
+	// Buys one food item by ID: spends money and time, restores hunger
+	// (capped at 100). Returns the Food bought, or null if the player
+	// can't afford it or the ID doesn't match a loaded item.
+	buyFood(foodId) {
+		const food = this.foodItems.find((item) => item.id === foodId);
+		if (!food || this.player.money < food.price) {
+			return null;
+		}
+		this.player.money -= food.price;
+		this.advanceTime(BUY_FOOD_MINUTES);
+		this.player.hunger = Math.min(100, this.player.hunger + food.hungerRestored);
+		return food;
 	}
 }
 

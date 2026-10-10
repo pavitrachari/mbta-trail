@@ -18,6 +18,13 @@ h1 {
 	margin-top: 0;
 }
 
+h2 {
+	font-size: 1rem;
+	border-top: 1px solid #1a7a1a;
+	padding-top: 1rem;
+	margin-top: 1.5rem;
+}
+
 p {
 	margin: 0.4rem 0;
 }
@@ -37,4 +44,20 @@ button:disabled {
 	color: #1a7a1a;
 	border-color: #1a7a1a;
 	cursor: default;
+}
+
+.food-item {
+	border: 1px solid #1a7a1a;
+	padding: 0.75rem;
+	margin-bottom: 0.5rem;
+}
+
+.food-item button {
+	margin-top: 0.5rem;
+}
+
+.flavor-text {
+	color: #1a7a1a;
+	font-style: italic;
+	margin: 0.3rem 0;
 }
