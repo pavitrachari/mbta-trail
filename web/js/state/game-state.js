@@ -1,5 +1,6 @@
 import { PlayerState, Difficulty } from "./player-state.js";
-import { loadRoute, loadStations, loadFoodItems } from "../data/data-loader.js";
+import { loadRoute, loadStations, loadFoodItems, loadHuntOutcomes } from "../data/data-loader.js";
+import { pickWeighted } from "../util/weighted-random.js";
 
 // Placeholder balancing constants. Not yet data-driven (GDD Section 19
 // eventually wants these externalized too) because there's only one
@@ -7,6 +8,7 @@ import { loadRoute, loadStations, loadFoodItems } from "../data/data-loader.js";
 // there's an actual reason to rebalance them independently.
 const HUNGER_DECAY_PER_MINUTE = 1;
 const BUY_FOOD_MINUTES = 3;
+const HUNT_MINUTES = 5;
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -30,6 +32,7 @@ class GameStateManager {
 		this.route = null;
 		this.stationsById = null;
 		this.foodItems = null;
+		this.huntOutcomes = null;
 	}
 
 	// Loads the Red Line's route and station data and places the player
@@ -46,6 +49,12 @@ class GameStateManager {
 	// buyFood() or listing foodItems in the UI.
 	async loadFoodMenu() {
 		this.foodItems = await loadFoodItems("../data/food/food.json");
+	}
+
+	// Loads the possible "Hunt for Food" outcomes. Must be awaited
+	// before calling huntForFood().
+	async loadHuntMenu() {
+		this.huntOutcomes = await loadHuntOutcomes("../data/food/hunt_outcomes.json");
 	}
 
 	// The Station object the player is currently standing at.
@@ -88,6 +97,19 @@ class GameStateManager {
 		this.advanceTime(BUY_FOOD_MINUTES);
 		this.player.hunger = Math.min(100, this.player.hunger + food.hungerRestored);
 		return food;
+	}
+
+	// Spends time searching for free food. Always costs HUNT_MINUTES;
+	// the outcome (including possibly finding nothing) is random.
+	// Returns the HuntOutcome, or null if already at Park Street.
+	huntForFood() {
+		if (this.hasArrived) {
+			return null;
+		}
+		this.advanceTime(HUNT_MINUTES);
+		const outcome = pickWeighted(this.huntOutcomes);
+		this.player.hunger = Math.min(100, this.player.hunger + outcome.hungerRestored);
+		return outcome;
 	}
 }
 

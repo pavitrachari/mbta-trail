@@ -1,8 +1,8 @@
 import { GameState } from "./state/game-state.js";
 
-// Phase 3 screen: adds hunger decay and a food menu on top of Phase
-// 2's movement. Hunt/Rest/Wait and the full turn menu still don't
-// exist yet - those are later Phase 3 slices.
+// Phase 3 screen: adds hunger decay, a food menu, and Hunt for Food on
+// top of Phase 2's movement. CharlieCard cost, Rest/Wait, and the full
+// turn menu still don't exist yet - those are later Phase 3 slices.
 
 function buildFoodMenu() {
 	const menu = document.getElementById("food-menu");
@@ -62,6 +62,8 @@ function refreshDisplay() {
 		resultLabel.textContent = "";
 	}
 
+	document.getElementById("hunt-button").disabled = GameState.hasArrived;
+
 	for (const buyButton of document.querySelectorAll("#food-menu button")) {
 		buyButton.disabled = GameState.hasArrived || player.money < Number(buyButton.dataset.price);
 	}
@@ -70,11 +72,18 @@ function refreshDisplay() {
 async function main() {
 	await GameState.loadRedLine();
 	await GameState.loadFoodMenu();
+	await GameState.loadHuntMenu();
 	buildFoodMenu();
 	refreshDisplay();
 
 	document.getElementById("ride-button").addEventListener("click", () => {
 		GameState.rideTrain();
+		refreshDisplay();
+	});
+
+	document.getElementById("hunt-button").addEventListener("click", () => {
+		const outcome = GameState.huntForFood();
+		document.getElementById("hunt-message").textContent = outcome.flavorText;
 		refreshDisplay();
 	});
 }

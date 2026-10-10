@@ -89,3 +89,21 @@ pass happens (see `04_Backlog.md`).
 (Section 11) as a single shared list - not per-line or per-station yet.
 Station-specific food opportunities (GDD Section 14) are a Phase 5
 content concern, not Phase 3 plumbing.
+
+**CharlieCard cost deferred:** Skipped CharlieCard spending on Ride
+Train this phase even though it was originally planned next. The
+prototype is hardcoded to the Easy archetype (unlimited pass, so nothing
+would visibly change), and there's no difficulty/archetype selection
+screen yet - that's Phase 4 Interface work. Revisit CharlieCard cost
+once archetype selection exists, so it's actually observable.
+
+**Hunt for Food:** Added `data/food/hunt_outcomes.json` (a list of
+`{ id, flavorText, hungerRestored, weight }`) and a small standalone
+`pickWeighted()` utility (`web/js/util/weighted-random.js`), rather than
+building the full Random Events system from GDD Section 13 (signal
+problems, delays, mechanical failures - a much bigger, route-wide
+system planned for its own phase). Hunting is specifically about food
+opportunities per Section 12, so it gets its own small, separate data
+file instead of overloading the general event schema prematurely.
+`HUNT_MINUTES = 5` is another placeholder balancing constant, same
+caveat as the others above.
