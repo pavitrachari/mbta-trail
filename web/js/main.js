@@ -1,8 +1,12 @@
 import { GameState } from "./state/game-state.js";
 
-// Phase 3 screen: adds hunger decay, a food menu, and Hunt for Food on
-// top of Phase 2's movement. CharlieCard cost, Rest/Wait, and the full
-// turn menu still don't exist yet - those are later Phase 3 slices.
+// Phase 3 screen: adds hunger decay, a food menu, and the Hunt for
+// Food minigame on top of Phase 2's movement. CharlieCard cost,
+// Rest/Wait, and the full turn menu still don't exist yet - those are
+// later Phase 3 slices.
+
+const MIN_CROSS_SECONDS = 1.0;
+const MAX_CROSS_SECONDS = 2.0;
 
 function buildFoodMenu() {
 	const menu = document.getElementById("food-menu");
@@ -34,6 +38,78 @@ function buildFoodMenu() {
 	}
 }
 
+// Plays one food item crossing the platform. Resolves true if the
+// player clicked it in time, false if it slid all the way across.
+function playHuntRound(food) {
+	return new Promise((resolve) => {
+		const track = document.getElementById("platform-track");
+		const token = document.createElement("div");
+		token.className = "food-token";
+		token.textContent = `${food.emoji} ${food.name}`;
+		token.style.left = "-15%";
+		token.style.transitionDuration =
+			`${MIN_CROSS_SECONDS + Math.random() * (MAX_CROSS_SECONDS - MIN_CROSS_SECONDS)}s`;
+		track.append(token);
+
+		let resolved = false;
+		function finish(caught) {
+			if (resolved) {
+				return;
+			}
+			resolved = true;
+			token.removeEventListener("click", onClick);
+			token.removeEventListener("transitionend", onEnd);
+			token.remove();
+			resolve(caught);
+		}
+		function onClick() {
+			finish(true);
+		}
+		function onEnd() {
+			finish(false);
+		}
+
+		token.addEventListener("click", onClick);
+		token.addEventListener("transitionend", onEnd);
+
+		// Setting the destination on the next frame (rather than
+		// immediately) is what makes the browser actually animate the
+		// move instead of snapping straight to the end position.
+		requestAnimationFrame(() => {
+			token.style.left = "110%";
+		});
+	});
+}
+
+async function runHuntMinigame() {
+	const foodsThisHunt = GameState.pickHuntRoundFoods();
+	const statusLabel = document.getElementById("hunt-status");
+	const caught = [];
+
+	for (const food of foodsThisHunt) {
+		statusLabel.textContent = "Catch it!";
+		const wasCaught = await playHuntRound(food);
+		if (wasCaught) {
+			caught.push(food);
+		}
+	}
+
+	const hungerGained = GameState.applyHuntResults(caught);
+	return { caught, hungerGained, total: foodsThisHunt.length };
+}
+
+// Disables every action button during the hunt animation, so riding
+// the train or buying food can't interleave with an in-progress hunt.
+// refreshDisplay() restores the correct enabled/disabled state once
+// the hunt is over.
+function disableAllActionsDuringHunt() {
+	document.getElementById("ride-button").disabled = true;
+	document.getElementById("hunt-button").disabled = true;
+	for (const buyButton of document.querySelectorAll("#food-menu button")) {
+		buyButton.disabled = true;
+	}
+}
+
 function refreshDisplay() {
 	const player = GameState.player;
 
@@ -52,16 +128,10 @@ function refreshDisplay() {
 	document.getElementById("multiplier").textContent =
 		`Score multiplier: ${player.scoreMultiplier.toFixed(1)}x`;
 
-	const rideButton = document.getElementById("ride-button");
-	const resultLabel = document.getElementById("result");
-	if (GameState.hasArrived) {
-		rideButton.disabled = true;
-		resultLabel.textContent = "You have reached Park Street.";
-	} else {
-		rideButton.disabled = false;
-		resultLabel.textContent = "";
-	}
+	document.getElementById("result").textContent =
+		GameState.hasArrived ? "You have reached Park Street." : "";
 
+	document.getElementById("ride-button").disabled = GameState.hasArrived;
 	document.getElementById("hunt-button").disabled = GameState.hasArrived;
 
 	for (const buyButton of document.querySelectorAll("#food-menu button")) {
@@ -81,9 +151,19 @@ async function main() {
 		refreshDisplay();
 	});
 
-	document.getElementById("hunt-button").addEventListener("click", () => {
-		const outcome = GameState.huntForFood();
-		document.getElementById("hunt-message").textContent = outcome.flavorText;
+	document.getElementById("hunt-button").addEventListener("click", async () => {
+		disableAllActionsDuringHunt();
+		document.getElementById("hunt-game").hidden = false;
+		document.getElementById("hunt-message").textContent = "";
+
+		const { caught, hungerGained, total } = await runHuntMinigame();
+
+		document.getElementById("hunt-game").hidden = true;
+		document.getElementById("hunt-status").textContent = "";
+		document.getElementById("hunt-message").textContent = caught.length > 0
+			? `Caught ${caught.length}/${total}: ${caught.map((food) => food.name).join(", ")}. (+${hungerGained} hunger)`
+			: `Caught nothing this time (0/${total}).`;
+
 		refreshDisplay();
 	});
 }

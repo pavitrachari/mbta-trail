@@ -1,6 +1,5 @@
 import { PlayerState, Difficulty } from "./player-state.js";
-import { loadRoute, loadStations, loadFoodItems, loadHuntOutcomes } from "../data/data-loader.js";
-import { pickWeighted } from "../util/weighted-random.js";
+import { loadRoute, loadStations, loadFoodItems, loadHuntableFoods } from "../data/data-loader.js";
 
 // Placeholder balancing constants. Not yet data-driven (GDD Section 19
 // eventually wants these externalized too) because there's only one
@@ -9,6 +8,18 @@ import { pickWeighted } from "../util/weighted-random.js";
 const HUNGER_DECAY_PER_MINUTE = 1;
 const BUY_FOOD_MINUTES = 3;
 const HUNT_MINUTES = 5;
+const HUNT_ROUNDS = 6;
+
+// Fisher-Yates shuffle, used to pick a random sample of foods for one
+// hunt without repeats.
+function shuffledSample(items, count) {
+	const pool = [...items];
+	for (let i = pool.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[pool[i], pool[j]] = [pool[j], pool[i]];
+	}
+	return pool.slice(0, count);
+}
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -32,7 +43,7 @@ class GameStateManager {
 		this.route = null;
 		this.stationsById = null;
 		this.foodItems = null;
-		this.huntOutcomes = null;
+		this.huntableFoods = null;
 	}
 
 	// Loads the Red Line's route and station data and places the player
@@ -51,10 +62,10 @@ class GameStateManager {
 		this.foodItems = await loadFoodItems("../data/food/food.json");
 	}
 
-	// Loads the possible "Hunt for Food" outcomes. Must be awaited
-	// before calling huntForFood().
+	// Loads the foods that can appear in the "Hunt for Food" minigame.
+	// Must be awaited before calling pickHuntRoundFoods().
 	async loadHuntMenu() {
-		this.huntOutcomes = await loadHuntOutcomes("../data/food/hunt_outcomes.json");
+		this.huntableFoods = await loadHuntableFoods("../data/food/huntable_foods.json");
 	}
 
 	// The Station object the player is currently standing at.
@@ -99,17 +110,23 @@ class GameStateManager {
 		return food;
 	}
 
-	// Spends time searching for free food. Always costs HUNT_MINUTES;
-	// the outcome (including possibly finding nothing) is random.
-	// Returns the HuntOutcome, or null if already at Park Street.
-	huntForFood() {
-		if (this.hasArrived) {
-			return null;
-		}
+	// Picks the random, non-repeating set of foods that will appear in
+	// one "Hunt for Food" minigame session. Pure selection - no state
+	// change and no time cost yet; that happens in applyHuntResults()
+	// once the player has actually played the round.
+	pickHuntRoundFoods() {
+		return shuffledSample(this.huntableFoods, HUNT_ROUNDS);
+	}
+
+	// Called once a hunt session is over. Always costs HUNT_MINUTES,
+	// regardless of how many foods were caught - skill decides the
+	// haul, not how long the search takes. Returns the total hunger
+	// restored.
+	applyHuntResults(caughtFoods) {
 		this.advanceTime(HUNT_MINUTES);
-		const outcome = pickWeighted(this.huntOutcomes);
-		this.player.hunger = Math.min(100, this.player.hunger + outcome.hungerRestored);
-		return outcome;
+		const hungerGained = caughtFoods.reduce((sum, food) => sum + food.hungerRestored, 0);
+		this.player.hunger = Math.min(100, this.player.hunger + hungerGained);
+		return hungerGained;
 	}
 }
 

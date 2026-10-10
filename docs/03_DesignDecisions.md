@@ -97,13 +97,33 @@ would visibly change), and there's no difficulty/archetype selection
 screen yet - that's Phase 4 Interface work. Revisit CharlieCard cost
 once archetype selection exists, so it's actually observable.
 
-**Hunt for Food:** Added `data/food/hunt_outcomes.json` (a list of
-`{ id, flavorText, hungerRestored, weight }`) and a small standalone
-`pickWeighted()` utility (`web/js/util/weighted-random.js`), rather than
-building the full Random Events system from GDD Section 13 (signal
-problems, delays, mechanical failures - a much bigger, route-wide
-system planned for its own phase). Hunting is specifically about food
-opportunities per Section 12, so it gets its own small, separate data
-file instead of overloading the general event schema prematurely.
-`HUNT_MINUTES = 5` is another placeholder balancing constant, same
-caveat as the others above.
+**Hunt for Food (superseded by a minigame):** Initially built as a
+weighted dice roll (`data/food/hunt_outcomes.json` +
+`web/js/util/weighted-random.js`). Replaced per explicit request with a
+skill-based minigame instead: food items cross a simple platform scene
+and the player clicks them before they slide past. This fits the GDD's
+"Meaningful Decisions" pillar (Section 2.5) better than pure RNG, and
+the GDD explicitly allowed upgrading hunting to "more complex
+mini-games" later (Section 12). The old files were deleted rather than
+left dead - `data/food/huntable_foods.json` (10 iconic Boston items:
+pretzel, pizza, Dunkin coffee, clam chowder, baked beans, Boston cream
+pie, fluffernutter, lobster roll, Fenway Frank, cannoli) replaces
+`hunt_outcomes.json`.
+
+**Minigame scope and mechanics:** Click-to-catch was chosen over a
+moving-cart or whack-a-mole style (the two other options discussed) as
+the simplest to build with plain CSS transitions - no keyboard input or
+collision math needed. Each hunt samples 6 unique foods (`HUNT_ROUNDS`)
+via a Fisher-Yates shuffle, shown one at a time; each crosses the
+platform over a randomized 1.0-2.0s duration so timing itself is the
+skill, rather than the identity of the food implying a fixed
+difficulty. `GameState` stays animation-agnostic: it only exposes
+`pickHuntRoundFoods()` and `applyHuntResults(caughtFoods)`; all
+CSS/DOM/animation code lives in `main.js`. Hunting still always costs
+`HUNT_MINUTES = 5` regardless of how many foods were caught - skill
+decides the haul, not the time spent.
+
+**Not emoji-perfect, and that's fine:** Cannoli uses the 🍪 (cookie)
+emoji since there's no dedicated cannoli emoji - an acceptable
+approximation for a "minimal graphics" prototype, not worth a custom
+asset pipeline over.

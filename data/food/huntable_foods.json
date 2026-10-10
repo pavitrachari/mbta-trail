@@ -1,0 +1,12 @@
+[
+	{ "id": "pretzel", "name": "Pretzel", "emoji": "🥨", "hungerRestored": 10 },
+	{ "id": "pizza", "name": "Pizza Slice", "emoji": "🍕", "hungerRestored": 20 },
+	{ "id": "dunkin_coffee", "name": "Dunkin Coffee", "emoji": "☕", "hungerRestored": 8 },
+	{ "id": "clam_chowder", "name": "Clam Chowder", "emoji": "🥣", "hungerRestored": 18 },
+	{ "id": "baked_beans", "name": "Baked Beans", "emoji": "🫘", "hungerRestored": 15 },
+	{ "id": "boston_cream_pie", "name": "Boston Cream Pie", "emoji": "🥧", "hungerRestored": 16 },
+	{ "id": "fluffernutter", "name": "Fluffernutter", "emoji": "🥪", "hungerRestored": 12 },
+	{ "id": "lobster_roll", "name": "Lobster Roll", "emoji": "🦞", "hungerRestored": 25 },
+	{ "id": "fenway_frank", "name": "Fenway Frank", "emoji": "🌭", "hungerRestored": 14 },
+	{ "id": "cannoli", "name": "Cannoli", "emoji": "🍪", "hungerRestored": 10 }
+]
