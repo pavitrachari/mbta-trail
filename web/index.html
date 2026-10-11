@@ -28,9 +28,11 @@
 			<p id="difficulty"></p>
 			<p id="multiplier"></p>
 			<button id="ride-button">Ride Train</button>
-			<p id="result"></p>
-			<p id="ride-message"></p>
 			<button id="hunt-button">Hunt for Food</button>
+			<button id="rest-button">Rest</button>
+			<button id="wait-button">Wait</button>
+			<p id="ride-message"></p>
+			<p id="rest-wait-message"></p>
 			<div id="hunt-game" hidden>
 				<p class="hunt-instructions">Arrow keys to fly, Space to shoot.</p>
 				<p id="hunt-status"></p>
@@ -41,6 +43,22 @@
 			<h2>Buy Food</h2>
 			<div id="food-menu"></div>
 			<p id="food-message"></p>
+		</section>
+
+		<section id="victory-screen" hidden>
+			<h1>You Made It!</h1>
+			<p class="flavor-text">Park Street. You survived the Boston commute.</p>
+			<p id="victory-time"></p>
+			<p id="victory-money"></p>
+			<p id="victory-charliecard"></p>
+			<p id="victory-score"></p>
+			<button id="play-again-button">Play Again</button>
+		</section>
+
+		<section id="game-over-screen" hidden>
+			<h1>Game Over</h1>
+			<p id="game-over-reason"></p>
+			<button id="try-again-button">Try Again</button>
 		</section>
 	</main>
 	<script type="module" src="js/main.js"></script>

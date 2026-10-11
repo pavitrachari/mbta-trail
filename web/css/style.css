@@ -110,3 +110,15 @@ button:disabled {
 	background: #33ff33;
 	border-radius: 2px;
 }
+
+#victory-screen h1 {
+	color: #ffcc00;
+}
+
+#game-over-screen h1 {
+	color: #ff5555;
+}
+
+#game-over-screen p {
+	color: #ff8888;
+}

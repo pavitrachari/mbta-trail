@@ -208,3 +208,46 @@ CharlieCard balance and cash gets Ride Train permanently disabled with
 no way to recover and no Game Over screen explaining what happened.
 That's the correct direction per GDD §16's lose conditions, but
 incomplete until Game Over is built.
+
+## Closing the loop: Rest/Wait, Victory, and Game Over
+
+**"Full turn menu" (GDD §9) interpreted as "all 5 actions exist,"
+not a literal single-choice menu widget.** The button-based UI already
+satisfies the turn loop's substance (pick an action, time advances,
+resources change, result shown, repeat); rebuilding it into a strict
+one-action-at-a-time menu would be a cosmetic reorganization with real
+UI risk and no gameplay payoff. Revisit if/when the GDD's "event
+screen" needs a moment where the player's choices are deliberately
+narrowed.
+
+**Rest vs. Wait are differentiated by a genuine trade-off, not just
+different numbers.** Wait (`WAIT_MINUTES = 2`) is a pure, short pass -
+time advances, hunger decays, nothing else. Rest (`REST_MINUTES = 8`,
+`REST_HUNGER_RESTORED = 10`) costs four times as much time but nets
+positive hunger even after its own decay (for Easy/Medium: -8 decay +10
+restore = +2; more favorable for Hard thanks to the 0.75 multiplier).
+This gives Rest a real purpose - a free (if slow) alternative to Hunt
+for Food when money's tight and the shooter feels too risky.
+
+**Lose conditions implemented: starvation and stranding** (GDD §16).
+`GameState.hasStarved` (hunger ≤ 0) and `GameState.isStranded` (can't
+afford a ride and hasn't arrived) are both exposed as getters; `main.js`
+checks them after every action via one shared `handleTurnOutcome()`
+function, so the check can't be forgotten when a future action is
+added. Reaching Park Street always takes precedence over a
+simultaneous starvation check - arriving is a win even if hunger also
+happened to hit zero on that exact move.
+
+**Placeholder scoring formula** (GDD §15, still not "finalized" in any
+real balancing sense): rewards finishing under a time baseline, plus
+leftover money and CharlieCard balance, all scaled by the archetype's
+score multiplier. Unlimited CharlieCard balance contributes 0 to the
+score rather than `Infinity` (which would break every comparison).
+Exact weights are arbitrary and meant to be revisited.
+
+**Play Again / Try Again route back to Character Select**, not a full
+page reload - `selectArchetype()` already fully replaces `player` and
+reloads the line, so no explicit "reset" method was needed. This did
+surface one real bug: `buildFoodMenu()` was appending rows without
+clearing the container first, so a second run would have shown
+duplicate food items. Fixed with `menu.replaceChildren()`.

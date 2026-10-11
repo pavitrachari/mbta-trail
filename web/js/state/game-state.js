@@ -15,6 +15,16 @@ const HUNGER_DECAY_PER_MINUTE = 1;
 const BUY_FOOD_MINUTES = 3;
 const HUNT_MINUTES = 5;
 const RIDE_FARE = 2.4; // the real current MBTA subway CharlieCard fare
+const WAIT_MINUTES = 2;
+const REST_MINUTES = 8;
+const REST_HUNGER_RESTORED = 10;
+
+// Placeholder scoring weights (GDD Section 15 - formula not finalized).
+// Rewards finishing fast, and leftover resources, scaled by difficulty.
+const SCORE_TIME_BASELINE = 500;
+const SCORE_TIME_WEIGHT = 2;
+const SCORE_MONEY_WEIGHT = 5;
+const SCORE_CHARLIECARD_WEIGHT = 5;
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -100,6 +110,21 @@ class GameStateManager {
 		return this.player.charliecardBalance >= RIDE_FARE || this.player.money >= RIDE_FARE;
 	}
 
+	// Lose condition (GDD Section 16): hunger hit zero.
+	get hasStarved() {
+		return this.player.hunger <= 0;
+	}
+
+	// Lose condition (GDD Section 16): stuck short of Park Street with
+	// no way to pay for another ride.
+	get isStranded() {
+		return !this.hasArrived && !this.canAffordRide;
+	}
+
+	get isGameOver() {
+		return this.hasStarved || this.isStranded;
+	}
+
 	// Spends time and, as a side effect, drains hunger (scaled by the
 	// current archetype's hungerDecayMultiplier). Every action that
 	// takes time should go through this rather than touching
@@ -173,6 +198,33 @@ class GameStateManager {
 		const hungerGained = caughtFoods.reduce((sum, food) => sum + food.hungerRestored, 0);
 		this.player.hunger = Math.min(100, this.player.hunger + hungerGained);
 		return hungerGained;
+	}
+
+	// Costs more time than any other action but restores some hunger -
+	// free, but the slowest way to recover.
+	rest() {
+		this.advanceTime(REST_MINUTES);
+		this.player.hunger = Math.min(100, this.player.hunger + REST_HUNGER_RESTORED);
+	}
+
+	// A short, free pass - no effect beyond the time (and hunger decay)
+	// it costs.
+	wait() {
+		this.advanceTime(WAIT_MINUTES);
+	}
+
+	// Placeholder scoring formula (GDD Section 15 - not finalized).
+	// Rewards finishing quickly and arriving with resources left over,
+	// scaled by the archetype's difficulty multiplier. Unlimited
+	// CharlieCard balance contributes nothing (Infinity would otherwise
+	// break the score).
+	calculateScore() {
+		const timeScore = Math.max(0, SCORE_TIME_BASELINE - this.player.timeElapsedMinutes * SCORE_TIME_WEIGHT);
+		const moneyScore = this.player.money * SCORE_MONEY_WEIGHT;
+		const charliecardScore = Number.isFinite(this.player.charliecardBalance)
+			? this.player.charliecardBalance * SCORE_CHARLIECARD_WEIGHT
+			: 0;
+		return Math.round((timeScore + moneyScore + charliecardScore) * this.player.scoreMultiplier);
 	}
 }
 
