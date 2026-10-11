@@ -25,10 +25,22 @@ and approved at the right phase instead of sneaking in early.
 - **Food prices/hunger values** (GDD §11): placeholder numbers are in
   `data/food/food.json` now (Phase 3), but not balance-tested.
 
+## Deferred from Phase 3 (picking up again once there's a reason to)
+
+- **Rest and Wait actions** (GDD §9): not built yet. Both are simple
+  (just pass time), but weren't worth their own slice before the turn
+  menu exists to hold them.
+- **Full turn menu** (GDD §9): the player currently sees every action
+  as an always-visible button rather than choosing one action per turn
+  from a menu. Deferred until Rest/Wait exist too, so the menu has
+  something real to switch between.
+- **CharlieCard cost on Ride Train**: still blocked on archetype/line
+  selection existing (see the CharlieCard balancing bullet above) -
+  Phase 4's character selection screen is what unblocks this.
+
 ## Future features (not Version 1)
 
 - Additional MBTA lines beyond Red/Green/Orange.
-- More complex hunting mini-games beyond randomized outcomes.
 - Achievements system details.
 - Save/load format.
 - Audio and pixel art asset production.
