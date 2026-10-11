@@ -1,0 +1,13 @@
+[
+	{ "id": "oak_grove", "name": "Oak Grove" },
+	{ "id": "malden_center", "name": "Malden Center" },
+	{ "id": "wellington", "name": "Wellington" },
+	{ "id": "assembly", "name": "Assembly" },
+	{ "id": "sullivan_square", "name": "Sullivan Square" },
+	{ "id": "community_college", "name": "Community College" },
+	{ "id": "north_station", "name": "North Station" },
+	{ "id": "haymarket", "name": "Haymarket" },
+	{ "id": "state", "name": "State" },
+	{ "id": "downtown_crossing", "name": "Downtown Crossing" },
+	{ "id": "park_street", "name": "Park Street" }
+]

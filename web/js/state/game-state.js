@@ -1,5 +1,11 @@
 import { PlayerState, Difficulty } from "./player-state.js";
-import { loadRoute, loadStations, loadFoodItems, loadHuntableFoods } from "../data/data-loader.js";
+import {
+	loadRoute,
+	loadStations,
+	loadFoodItems,
+	loadHuntableFoods,
+	loadArchetypes,
+} from "../data/data-loader.js";
 
 // Placeholder balancing constants. Not yet data-driven (GDD Section 19
 // eventually wants these externalized too) because there's only one
@@ -14,32 +20,53 @@ const HUNT_MINUTES = 5;
 // gameState below gets this exact same instance.
 class GameStateManager {
 	constructor() {
-		// Placeholder Easy-mode defaults, just like Phase 1. currentStation
-		// is overwritten once the route finishes loading. Real archetype
-		// selection (Phase 2/3) will replace this with values loaded from
-		// data/archetypes/.
-		this.player = new PlayerState({
-			currentStation: null,
-			timeElapsedMinutes: 0,
-			money: 40.0,
-			charliecardBalance: 10.0,
-			hunger: 100,
-			difficulty: Difficulty.EASY,
-			scoreMultiplier: 1.0,
-		});
+		// No player exists until an archetype is chosen - the Character
+		// Select screen calls selectArchetype() before anything else
+		// touches GameState.player.
+		this.player = null;
+		this.hungerDecayMultiplier = 1.0;
 
+		this.archetypes = null;
 		this.route = null;
 		this.stationsById = null;
 		this.foodItems = null;
 		this.huntableFoods = null;
 	}
 
-	// Loads the Red Line's route and station data and places the player
-	// at the first station. Must be awaited before anything reads
-	// currentStation or calls rideTrain().
-	async loadRedLine() {
-		this.route = await loadRoute("../data/routes/red_line.json");
-		const stations = await loadStations("../data/stations/red_line.json");
+	// Loads the three commuter archetypes. Must be awaited before the
+	// Character Select screen can list them or call selectArchetype().
+	async loadArchetypes() {
+		this.archetypes = await loadArchetypes("../data/archetypes/archetypes.json");
+	}
+
+	// Applies an archetype's starting resources and loads its line.
+	// Must be awaited before anything reads player/currentStation.
+	async selectArchetype(archetypeId) {
+		const archetype = this.archetypes.find((candidate) => candidate.id === archetypeId);
+		this.hungerDecayMultiplier = archetype.hungerDecayMultiplier;
+		this.player = new PlayerState({
+			currentStation: null,
+			timeElapsedMinutes: 0,
+			money: archetype.startingMoney,
+			// Infinity represents the Easy archetype's unlimited monthly
+			// pass: spending against it (once Ride Train costs CharlieCard
+			// balance) will naturally never run it down.
+			charliecardBalance: archetype.unlimitedCharliecard
+				? Infinity
+				: archetype.startingCharliecardBalance,
+			hunger: archetype.startingHunger,
+			difficulty: Difficulty[archetype.difficulty],
+			scoreMultiplier: archetype.scoreMultiplier,
+		});
+		await this.loadLine(archetype.lineId);
+	}
+
+	// Loads a line's route and station data and places the player at
+	// its first station. lineId matches a data/routes/<lineId>.json and
+	// data/stations/<lineId>.json pair (e.g. "red_line").
+	async loadLine(lineId) {
+		this.route = await loadRoute(`../data/routes/${lineId}.json`);
+		const stations = await loadStations(`../data/stations/${lineId}.json`);
 		this.stationsById = new Map(stations.map((station) => [station.id, station]));
 		this.player.currentStation = this.route.firstStationId;
 	}
@@ -65,12 +92,16 @@ class GameStateManager {
 		return this.player.currentStation === this.route.lastStationId;
 	}
 
-	// Spends time and, as a side effect, drains hunger. Every action
-	// that takes time should go through this rather than touching
+	// Spends time and, as a side effect, drains hunger (scaled by the
+	// current archetype's hungerDecayMultiplier). Every action that
+	// takes time should go through this rather than touching
 	// timeElapsedMinutes directly, so hunger decay stays in one place.
 	advanceTime(minutes) {
 		this.player.timeElapsedMinutes += minutes;
-		this.player.hunger = Math.max(0, this.player.hunger - minutes * HUNGER_DECAY_PER_MINUTE);
+		this.player.hunger = Math.max(
+			0,
+			this.player.hunger - minutes * HUNGER_DECAY_PER_MINUTE * this.hungerDecayMultiplier,
+		);
 	}
 
 	// Advances the player one stop along the route and spends the

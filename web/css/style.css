@@ -46,14 +46,21 @@ button:disabled {
 	cursor: default;
 }
 
-.food-item {
+.food-item,
+.archetype-card {
 	border: 1px solid #1a7a1a;
 	padding: 0.75rem;
 	margin-bottom: 0.5rem;
 }
 
-.food-item button {
+.food-item button,
+.archetype-card button {
 	margin-top: 0.5rem;
+}
+
+.archetype-card h3 {
+	margin: 0 0 0.3rem;
+	font-size: 1rem;
 }
 
 .flavor-text {

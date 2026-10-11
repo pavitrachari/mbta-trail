@@ -1,0 +1,18 @@
+{
+	"id": "orange_line",
+	"name": "Orange Line",
+	"stationIds": [
+		"oak_grove",
+		"malden_center",
+		"wellington",
+		"assembly",
+		"sullivan_square",
+		"community_college",
+		"north_station",
+		"haymarket",
+		"state",
+		"downtown_crossing",
+		"park_street"
+	],
+	"rideMinutes": 4
+}

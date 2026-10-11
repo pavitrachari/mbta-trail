@@ -1,0 +1,10 @@
+[
+	{ "id": "longwood", "name": "Longwood" },
+	{ "id": "fenway", "name": "Fenway" },
+	{ "id": "kenmore", "name": "Kenmore" },
+	{ "id": "hynes_convention_center", "name": "Hynes Convention Center" },
+	{ "id": "copley", "name": "Copley" },
+	{ "id": "arlington", "name": "Arlington" },
+	{ "id": "boylston", "name": "Boylston" },
+	{ "id": "park_street", "name": "Park Street" }
+]

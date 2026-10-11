@@ -1,0 +1,15 @@
+{
+	"id": "green_line",
+	"name": "Green Line",
+	"stationIds": [
+		"longwood",
+		"fenway",
+		"kenmore",
+		"hynes_convention_center",
+		"copley",
+		"arlington",
+		"boylston",
+		"park_street"
+	],
+	"rideMinutes": 4
+}

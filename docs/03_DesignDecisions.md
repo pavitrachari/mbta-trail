@@ -138,3 +138,51 @@ trivial to add back since it's one JSON file.
 emoji since there's no dedicated cannoli emoji - an acceptable
 approximation for a "minimal graphics" prototype, not worth a custom
 asset pipeline over.
+
+## Phase 4 — Interface (Main Menu → Character Select)
+
+**Screen switching:** `index.html` now has three `<section>`s
+(`main-menu-screen`, `character-select-screen`, `game-screen`) inside
+`#screen`; `showScreen(id)` in `main.js` hides every sibling except the
+one requested. Simple enough not to need a dedicated "screen manager"
+class - this same pattern gets reused for Victory/Game Over later.
+
+**Archetype data format:** `data/archetypes/archetypes.json` is one
+array file with all three archetypes, matching the pattern already
+used for `food.json`/`huntable_foods.json` (a handful of small items),
+rather than one-file-per-archetype like stations/routes (where each
+line's content is large enough to warrant its own file).
+
+**Green Line and Orange Line content added** (GDD §7.2/§7.3) - pure
+JSON, zero new loading code, since `loadRoute()`/`loadStations()` were
+already line-agnostic. `rideMinutes` is the same placeholder `4` as the
+Red Line for all three lines for now; real per-line pacing is a
+balancing-pass question, not a Phase 4 one.
+
+**Orange Line's Downtown Crossing is currently a plain stop.** The
+GDD's finale (transfer to Red Line vs. the concourse challenge, GDD
+§7.3) is explicitly not implemented - riding through Downtown Crossing
+just works like any other hop for now. Still tracked in
+`04_Backlog.md` as needing its own design discussion before
+implementation.
+
+**CharlieCard "Unlimited" via `Infinity`:** Easy's unlimited pass is
+represented as `player.charliecardBalance = Infinity` rather than a
+separate boolean flag. This means the display layer needs one
+`Number.isFinite()` check (done in `main.js`), but once CharlieCard
+cost on Ride Train is wired in (next), spending against `Infinity`
+naturally never runs it down - no special-casing needed in the spend
+logic itself.
+
+**Archetype-driven hunger decay:** Added `GameState.hungerDecayMultiplier`
+(not part of `PlayerState`, since GDD §8 doesn't list it as player
+state - it's archetype-derived behavior config, same category as
+`route`/`stationsById`). State Employee (Hard) gets `0.75` per GDD §6.3
+("hunger decreases more slowly"); Easy/Medium stay at `1.0`. This gives
+the archetypes a real mechanical difference beyond just starting
+numbers, which the GDD's own advantages list calls for.
+
+**Starting money/CharlieCard numbers are still placeholders** flagged
+in `04_Backlog.md` pending a real balancing pass, same caveat as every
+other balancing constant so far - picked them low-risk (Hard poorer
+than Medium poorer than Easy) rather than precisely tuned.

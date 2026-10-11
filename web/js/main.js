@@ -1,12 +1,48 @@
 import { GameState } from "./state/game-state.js";
 import { runHuntMinigame } from "./hunt-minigame.js";
 
-// Phase 3 screen: adds hunger decay, a food menu, and the Hunt for
-// Food minigame on top of Phase 2's movement. CharlieCard cost,
-// Rest/Wait, and the full turn menu still don't exist yet - those are
-// later Phase 3 slices.
+// Phase 4 screen flow: Main Menu -> Character Select -> Game. Rest/Wait,
+// the full turn menu, CharlieCard cost on Ride Train, and the Downtown
+// Crossing finale still don't exist yet - see docs/04_Backlog.md.
 
 const BULLET_COUNT = 6;
+
+function showScreen(screenId) {
+	for (const section of document.querySelectorAll("#screen > section")) {
+		section.hidden = section.id !== screenId;
+	}
+}
+
+function buildArchetypeList() {
+	const list = document.getElementById("archetype-list");
+	for (const archetype of GameState.archetypes) {
+		const card = document.createElement("div");
+		card.className = "archetype-card";
+
+		const title = document.createElement("h3");
+		title.textContent = `${archetype.name} (${archetype.difficulty})`;
+
+		const flavor = document.createElement("p");
+		flavor.className = "flavor-text";
+		flavor.textContent = archetype.flavorText;
+
+		const chooseButton = document.createElement("button");
+		chooseButton.textContent = "Choose";
+		chooseButton.addEventListener("click", () => startRun(archetype.id));
+
+		card.append(title, flavor, chooseButton);
+		list.append(card);
+	}
+}
+
+async function startRun(archetypeId) {
+	await GameState.selectArchetype(archetypeId);
+	await GameState.loadFoodMenu();
+	await GameState.loadHuntMenu();
+	buildFoodMenu();
+	refreshDisplay();
+	showScreen("game-screen");
+}
 
 function buildFoodMenu() {
 	const menu = document.getElementById("food-menu");
@@ -59,8 +95,9 @@ function refreshDisplay() {
 		`Time elapsed: ${player.timeElapsedMinutes} min`;
 	document.getElementById("money").textContent =
 		`Money: $${player.money.toFixed(2)}`;
-	document.getElementById("charliecard").textContent =
-		`CharlieCard balance: $${player.charliecardBalance.toFixed(2)}`;
+	document.getElementById("charliecard").textContent = Number.isFinite(player.charliecardBalance)
+		? `CharlieCard balance: $${player.charliecardBalance.toFixed(2)}`
+		: "CharlieCard balance: Unlimited";
 	document.getElementById("hunger").textContent =
 		`Hunger: ${player.hunger}`;
 	document.getElementById("difficulty").textContent =
@@ -80,11 +117,12 @@ function refreshDisplay() {
 }
 
 async function main() {
-	await GameState.loadRedLine();
-	await GameState.loadFoodMenu();
-	await GameState.loadHuntMenu();
-	buildFoodMenu();
-	refreshDisplay();
+	await GameState.loadArchetypes();
+	buildArchetypeList();
+
+	document.getElementById("start-button").addEventListener("click", () => {
+		showScreen("character-select-screen");
+	});
 
 	document.getElementById("ride-button").addEventListener("click", () => {
 		GameState.rideTrain();

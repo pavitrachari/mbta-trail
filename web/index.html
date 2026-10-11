@@ -7,27 +7,40 @@
 </head>
 <body>
 	<main id="screen">
-		<h1>MBTA Trail</h1>
-		<p id="station"></p>
-		<p id="time"></p>
-		<p id="money"></p>
-		<p id="charliecard"></p>
-		<p id="hunger"></p>
-		<p id="difficulty"></p>
-		<p id="multiplier"></p>
-		<button id="ride-button">Ride Train</button>
-		<p id="result"></p>
-		<button id="hunt-button">Hunt for Food</button>
-		<div id="hunt-game" hidden>
-			<p class="hunt-instructions">Arrow keys to fly, Space to shoot.</p>
-			<p id="hunt-status"></p>
-			<div id="hunt-arena"></div>
-		</div>
-		<p id="hunt-message"></p>
+		<section id="main-menu-screen">
+			<h1>MBTA Trail</h1>
+			<p class="flavor-text">A loving, slightly absurd homage to Oregon Trail, Boston, and the MBTA.</p>
+			<button id="start-button">Start</button>
+		</section>
 
-		<h2>Buy Food</h2>
-		<div id="food-menu"></div>
-		<p id="food-message"></p>
+		<section id="character-select-screen" hidden>
+			<h1>Choose Your Commuter</h1>
+			<div id="archetype-list"></div>
+		</section>
+
+		<section id="game-screen" hidden>
+			<h1>MBTA Trail</h1>
+			<p id="station"></p>
+			<p id="time"></p>
+			<p id="money"></p>
+			<p id="charliecard"></p>
+			<p id="hunger"></p>
+			<p id="difficulty"></p>
+			<p id="multiplier"></p>
+			<button id="ride-button">Ride Train</button>
+			<p id="result"></p>
+			<button id="hunt-button">Hunt for Food</button>
+			<div id="hunt-game" hidden>
+				<p class="hunt-instructions">Arrow keys to fly, Space to shoot.</p>
+				<p id="hunt-status"></p>
+				<div id="hunt-arena"></div>
+			</div>
+			<p id="hunt-message"></p>
+
+			<h2>Buy Food</h2>
+			<div id="food-menu"></div>
+			<p id="food-message"></p>
+		</section>
 	</main>
 	<script type="module" src="js/main.js"></script>
 </body>

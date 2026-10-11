@@ -1,0 +1,41 @@
+[
+	{
+		"id": "easy",
+		"name": "Tech / Finance Bro",
+		"difficulty": "EASY",
+		"lineId": "red_line",
+		"startingMoney": 40.0,
+		"unlimitedCharliecard": true,
+		"startingCharliecardBalance": 0,
+		"startingHunger": 100,
+		"hungerDecayMultiplier": 1.0,
+		"scoreMultiplier": 1.0,
+		"flavorText": "With a coffee cup in one hand and phone in the other, you are ready for work. Any unexpected delays can be solved with money."
+	},
+	{
+		"id": "medium",
+		"name": "College Student",
+		"difficulty": "MEDIUM",
+		"lineId": "green_line",
+		"startingMoney": 15.0,
+		"unlimitedCharliecard": false,
+		"startingCharliecardBalance": 10.0,
+		"startingHunger": 100,
+		"hungerDecayMultiplier": 1.0,
+		"scoreMultiplier": 2.0,
+		"flavorText": "You are scrappy and resourceful. You can probably find some free stuff at the dozens of colleges on the way downtown."
+	},
+	{
+		"id": "hard",
+		"name": "State Employee",
+		"difficulty": "HARD",
+		"lineId": "orange_line",
+		"startingMoney": 8.0,
+		"unlimitedCharliecard": false,
+		"startingCharliecardBalance": 5.0,
+		"startingHunger": 100,
+		"hungerDecayMultiplier": 0.75,
+		"scoreMultiplier": 3.0,
+		"flavorText": "Payday is still a few days away. You have survived budget cuts, hiring freezes, and mandatory trainings. You can probably survive the Orange Line."
+	}
+]
