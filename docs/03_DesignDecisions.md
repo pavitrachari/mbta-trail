@@ -186,3 +186,25 @@ numbers, which the GDD's own advantages list calls for.
 in `04_Backlog.md` pending a real balancing pass, same caveat as every
 other balancing constant so far - picked them low-risk (Hard poorer
 than Medium poorer than Easy) rather than precisely tuned.
+
+## CharlieCard cost on Ride Train
+
+**Fare paid from CharlieCard balance first, falling back to cash** if
+the balance is too low to cover it, rather than blocking the ride
+outright whenever the balance alone is insufficient. This models GDD
+§10.3's "the player may need to spend money to replenish their
+balance" without yet building a dedicated top-up action. `RIDE_FARE =
+$2.40` is today's real MBTA subway CharlieCard fare - a real number
+rather than an arbitrary placeholder, though still subject to
+rebalancing like everything else here.
+
+**Easy's `Infinity` balance pays this for free with zero special-case
+code** - exactly the payoff anticipated when that representation was
+chosen in the Character Select step. `Infinity - 2.40` is still
+`Infinity`, so `payFare()` needed no Easy-specific branch.
+
+**Known gap, tracked in `04_Backlog.md`:** a player who depletes both
+CharlieCard balance and cash gets Ride Train permanently disabled with
+no way to recover and no Game Over screen explaining what happened.
+That's the correct direction per GDD §16's lose conditions, but
+incomplete until Game Over is built.

@@ -2,8 +2,8 @@ import { GameState } from "./state/game-state.js";
 import { runHuntMinigame } from "./hunt-minigame.js";
 
 // Phase 4 screen flow: Main Menu -> Character Select -> Game. Rest/Wait,
-// the full turn menu, CharlieCard cost on Ride Train, and the Downtown
-// Crossing finale still don't exist yet - see docs/04_Backlog.md.
+// the full turn menu, and the Downtown Crossing finale still don't
+// exist yet - see docs/04_Backlog.md.
 
 const BULLET_COUNT = 6;
 
@@ -108,7 +108,7 @@ function refreshDisplay() {
 	document.getElementById("result").textContent =
 		GameState.hasArrived ? "You have reached Park Street." : "";
 
-	document.getElementById("ride-button").disabled = GameState.hasArrived;
+	document.getElementById("ride-button").disabled = GameState.hasArrived || !GameState.canAffordRide;
 	document.getElementById("hunt-button").disabled = GameState.hasArrived;
 
 	for (const buyButton of document.querySelectorAll("#food-menu button")) {
@@ -125,7 +125,10 @@ async function main() {
 	});
 
 	document.getElementById("ride-button").addEventListener("click", () => {
-		GameState.rideTrain();
+		const rode = GameState.rideTrain();
+		document.getElementById("ride-message").textContent = rode
+			? ""
+			: "Not enough money or CharlieCard balance to pay the fare.";
 		refreshDisplay();
 	});
 

@@ -14,6 +14,7 @@ import {
 const HUNGER_DECAY_PER_MINUTE = 1;
 const BUY_FOOD_MINUTES = 3;
 const HUNT_MINUTES = 5;
+const RIDE_FARE = 2.4; // the real current MBTA subway CharlieCard fare
 
 // Global source of truth for the current run's state. Because ES
 // modules are evaluated once and cached, every file that imports
@@ -92,6 +93,13 @@ class GameStateManager {
 		return this.player.currentStation === this.route.lastStationId;
 	}
 
+	// Whether the player has enough to pay one ride's fare, from either
+	// CharlieCard balance or cash. Easy's Infinity balance always
+	// satisfies this.
+	get canAffordRide() {
+		return this.player.charliecardBalance >= RIDE_FARE || this.player.money >= RIDE_FARE;
+	}
+
 	// Spends time and, as a side effect, drains hunger (scaled by the
 	// current archetype's hungerDecayMultiplier). Every action that
 	// takes time should go through this rather than touching
@@ -105,14 +113,33 @@ class GameStateManager {
 	}
 
 	// Advances the player one stop along the route and spends the
-	// route's ride time. Does nothing if already at the last station.
+	// route's ride time, after paying the fare. Does nothing (and
+	// returns false) if already at the last station or if the fare
+	// can't be paid.
 	rideTrain() {
-		if (this.hasArrived) {
-			return;
+		if (this.hasArrived || !this.payFare()) {
+			return false;
 		}
 		const nextStationId = this.route.nextStationId(this.player.currentStation);
 		this.player.currentStation = nextStationId;
 		this.advanceTime(this.route.rideMinutes);
+		return true;
+	}
+
+	// Deducts one ride's fare, preferring CharlieCard balance and
+	// falling back to cash if the balance is too low to cover it (as
+	// if topping up on the spot). Returns false if neither can cover
+	// it, in which case nothing is deducted.
+	payFare() {
+		if (this.player.charliecardBalance >= RIDE_FARE) {
+			this.player.charliecardBalance -= RIDE_FARE;
+			return true;
+		}
+		if (this.player.money >= RIDE_FARE) {
+			this.player.money -= RIDE_FARE;
+			return true;
+		}
+		return false;
 	}
 
 	// Buys one food item by ID: spends money and time, restores hunger
